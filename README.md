@@ -1,7 +1,7 @@
 ![image](https://github.com/user-attachments/assets/08d78c2f-b130-42ac-a2dc-0ae7a76b1e35)
 
 
-Макета: 
+Макет: 
 https://www.figma.com/design/kmqrvsBfrpWa1Pu3v3rgMz/%D0%9F%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F-%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-4.3.7?node-id=0-1
 
 Задача:
