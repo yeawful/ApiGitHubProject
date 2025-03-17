@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   searchInput.addEventListener("input", handleInputWithDebounce);
 
-  // Обработка клика по элементам списка результатов (делегирование)
+  // Обработка клика по элементам списка результатов
   searchResultsList.addEventListener("click", (e) => {
     const clickedItem = e.target.closest(".search-list__item");
     if (clickedItem && data) {
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Обработка клика по кнопке удаления в контейнере выбранных репозиториев (делегирование)
+  // Обработка клика по кнопке удаления в контейнере выбранных репозиториев
   selectedResultsBox.addEventListener("click", (e) => {
     if (e.target.classList.contains("result-box__btn")) {
       removeRepository(e.target);
