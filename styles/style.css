@@ -117,6 +117,7 @@ body {
     border: none;
     background-color: transparent;
     margin-left: auto;
+    margin-right: 35px;
 }
 
 .result-box__btn::before,
@@ -127,8 +128,7 @@ body {
     width: 60px;
     height: 4px;
     background: #ff0000;
-    right: 30px;
-    bottom: 30px;
+    right: 0px;
 }
 
 .result-box__btn::after {
