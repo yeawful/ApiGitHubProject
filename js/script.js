@@ -1,58 +1,112 @@
+import { debounce } from "./helpers/debounce.js";
+
 document.addEventListener("DOMContentLoaded", () => {
-  const input = document.querySelector(".form__input");
-  const list = document.querySelector(".search-list");
-  const result = document.querySelector(".result-box");
+  const searchInput = document.querySelector(".form__input");
+  const searchResultsList = document.querySelector(".search-list");
+  const selectedResultsBox = document.querySelector(".result-box");
 
-  let timeoutId;
+  let data = null;
 
-  input.addEventListener("input", () => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(async () => {
-      const query = input.value.trim();
-      if (!query) {
-        list.innerHTML = "";
-        return;
+  // Обработка ввода с использованием debounce
+  const handleInputWithDebounce = debounce(async () => {
+    const query = searchInput.value.trim();
+    if (!query) {
+      clearSearchResults();
+      return;
+    }
+
+    try {
+      data = await fetchRepositories(query);
+      displaySearchResults(data);
+    } catch (error) {
+      console.error("Ошибка при запросе к API", error);
+    }
+  }, 500);
+
+  searchInput.addEventListener("input", handleInputWithDebounce);
+
+  // Обработка клика по элементам списка результатов (делегирование)
+  searchResultsList.addEventListener("click", (e) => {
+    const clickedItem = e.target.closest(".search-list__item");
+    if (clickedItem && data) {
+      const repoName = clickedItem.textContent;
+      const repo = data.items.find((r) => r.full_name === repoName);
+      if (repo) {
+        addRepositoryToSelected(repo);
+        clearSearchInput();
+        clearSearchResults();
       }
-
-      try {
-        const response = await fetch(
-          `https://api.github.com/search/repositories?q=${query}&per_page=5`
-        );
-
-        const data = await response.json();
-        list.innerHTML = data.items
-          .map((repo) => `<li class="search-list__item">${repo.full_name}</li>`)
-          .join("");
-
-        list.querySelectorAll(".search-list__item").forEach((item) => {
-          item.addEventListener("click", () => {
-            const repo = data.items.find(
-              (r) => r.full_name === item.textContent
-            );
-            result.innerHTML += `
-              <div class="result-box__item">
-                <div class="result-box__info">
-                  <span>Name: ${repo.name}</span>
-                  <span>Owner: ${repo.owner.login}</span>
-                  <span>Stars: ${repo.stargazers_count}</span>
-                </div>
-                <button class="result-box__btn"></button>
-              </div>
-            `;
-            input.value = "";
-            list.innerHTML = "";
-          });
-        });
-      } catch (error) {
-        console.error("Ошибка при запросе к API", error);
-      }
-    }, 500);
-  });
-
-  // Обработчик клика для удаления репозиториев
-  result.addEventListener("click", (e) => {
-    if (e.target.classList.contains("result-box__btn")) {
-      e.target.closest(".result-box__item").remove();
     }
   });
+
+  // Обработка клика по кнопке удаления в контейнере выбранных репозиториев (делегирование)
+  selectedResultsBox.addEventListener("click", (e) => {
+    if (e.target.classList.contains("result-box__btn")) {
+      removeRepository(e.target);
+    }
+  });
+
+  // Запрос к API для получения репозиториев
+  async function fetchRepositories(query) {
+    const response = await fetch(
+      `https://api.github.com/search/repositories?q=${query}&per_page=5`
+    );
+    return response.json();
+  }
+
+  // Отображение результатов поиска
+  function displaySearchResults(data) {
+    searchResultsList.innerHTML = "";
+    data.items.forEach((repo) => {
+      const listItem = document.createElement("li");
+      listItem.classList.add("search-list__item");
+      listItem.textContent = repo.full_name;
+      searchResultsList.appendChild(listItem);
+    });
+  }
+
+  // Добавление выбранного репозитория в контейнер
+  function addRepositoryToSelected(repo) {
+    const resultItem = document.createElement("div");
+    resultItem.classList.add("result-box__item");
+
+    const resultInfo = document.createElement("div");
+    resultInfo.classList.add("result-box__info");
+
+    const nameSpan = document.createElement("span");
+    nameSpan.textContent = `Name: ${repo.name}`;
+
+    const ownerSpan = document.createElement("span");
+    ownerSpan.textContent = `Owner: ${repo.owner.login}`;
+
+    const starsSpan = document.createElement("span");
+    starsSpan.textContent = `Stars: ${repo.stargazers_count}`;
+
+    resultInfo.appendChild(nameSpan);
+    resultInfo.appendChild(ownerSpan);
+    resultInfo.appendChild(starsSpan);
+
+    const removeButton = document.createElement("button");
+    removeButton.classList.add("result-box__btn");
+
+    resultItem.appendChild(resultInfo);
+    resultItem.appendChild(removeButton);
+
+    selectedResultsBox.appendChild(resultItem);
+  }
+
+  // Удаление репозитория из контейнера
+  function removeRepository(button) {
+    button.closest(".result-box__item").remove();
+  }
+
+  // Очистка поля ввода
+  function clearSearchInput() {
+    searchInput.value = "";
+  }
+
+  // Очистка списка результатов поиска
+  function clearSearchResults() {
+    searchResultsList.innerHTML = "";
+  }
 });
