@@ -98,7 +98,7 @@ body {
 .result-box__info {
     display: flex;
     flex-direction: column;
-    width: 250px;
+    width: 350px;
     min-height: 100px;
     padding: 10px 0 10px 16px;
     overflow: hidden;
@@ -124,7 +124,7 @@ body {
     width: 60px;
     height: 4px;
     background: #ff0000;
-    left: 0;
+    left: -100px;
 }
 
 .result-box__btn::after {
