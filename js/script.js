@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Обработка клика по кнопке удаления в контейнере выбранных репозиториев
   selectedResultsBox.addEventListener("click", (e) => {
-    if (e.target.classList.contains("result-box__btn")) {
+    if (e.target.tagName === "BUTTON") {
       removeRepository(e.target);
     }
   });
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const listItem = document.createElement("li");
       listItem.classList.add("search-list__item");
       listItem.textContent = repo.full_name;
-      searchResultsList.appendChild(listItem);
+      searchResultsList.append(listItem);
     });
   }
 
@@ -82,17 +82,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const starsSpan = document.createElement("span");
     starsSpan.textContent = `Stars: ${repo.stargazers_count}`;
 
-    resultInfo.appendChild(nameSpan);
-    resultInfo.appendChild(ownerSpan);
-    resultInfo.appendChild(starsSpan);
+    resultInfo.append(nameSpan);
+    resultInfo.append(ownerSpan);
+    resultInfo.append(starsSpan);
 
     const removeButton = document.createElement("button");
     removeButton.classList.add("result-box__btn");
 
-    resultItem.appendChild(resultInfo);
-    resultItem.appendChild(removeButton);
+    resultItem.append(resultInfo);
+    resultItem.append(removeButton);
 
-    selectedResultsBox.appendChild(resultItem);
+    selectedResultsBox.append(resultItem);
   }
 
   // Удаление репозитория из контейнера
@@ -107,6 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Очистка списка результатов поиска
   function clearSearchResults() {
-    searchResultsList.innerHTML = "";
+    searchResultsList.replaceChildren();
   }
 });
